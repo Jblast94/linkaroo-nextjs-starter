@@ -1,12 +1,36 @@
 'use client'
-import { useState } from 'react'
+import { useState, FormEvent, useEffect } from 'react'
 
-export default function LinkForm({ onSubmit, initialData = null }) {
-  const [title, setTitle] = useState(initialData?.title || '')
-  const [url, setUrl] = useState(initialData?.url || '')
-  const [icon, setIcon] = useState(initialData?.icon || 'link')
+type Link = {
+  id: number;
+  title: string;
+  url: string;
+  icon: string;
+};
 
-  const handleSubmit = (e) => {
+type LinkFormProps = {
+  onSubmit: (data: Omit<Link, 'id'>) => void;
+  initialData?: Link | null;
+};
+
+export default function LinkForm({ onSubmit, initialData = null }: LinkFormProps) {
+  const [title, setTitle] = useState('')
+  const [url, setUrl] = useState('')
+  const [icon, setIcon] = useState('link')
+
+  useEffect(() => {
+    if (initialData) {
+      setTitle(initialData.title || '')
+      setUrl(initialData.url || '')
+      setIcon(initialData.icon || 'link')
+    } else {
+      setTitle('')
+      setUrl('')
+      setIcon('link')
+    }
+  }, [initialData])
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     onSubmit({ title, url, icon })
     if (!initialData?.id) {

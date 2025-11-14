@@ -4,12 +4,27 @@ import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import LinkForm from '@/components/LinkForm'
 import ThemeToggle from '@/components/ThemeToggle'
+import { User } from '@supabase/supabase-js'
+
+type Link = {
+  id: number;
+  title: string;
+  url: string;
+  icon: string;
+  order_index: number;
+};
+
+type Profile = {
+  id: string;
+  username: string;
+  display_name: string;
+};
 
 export default function Dashboard() {
-  const [user, setUser] = useState(null)
-  const [profile, setProfile] = useState(null)
-  const [links, setLinks] = useState([])
-  const [editingLink, setEditingLink] = useState(null)
+  const [user, setUser] = useState<User | null>(null)
+  const [profile, setProfile] = useState<Profile | null>(null)
+  const [links, setLinks] = useState<Link[]>([])
+  const [editingLink, setEditingLink] = useState<Link | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -38,7 +53,8 @@ export default function Dashboard() {
     loadUserData()
   }, [])
 
-  const handleAddLink = async (linkData) => {
+  const handleAddLink = async (linkData: Omit<Link, 'id' | 'order_index' | 'profile_id'>) => {
+    if (!user) return
     if (editingLink) {
       // Update existing link
       await supabase
@@ -50,7 +66,7 @@ export default function Dashboard() {
       setEditingLink(null)
     } else {
       // Create new link
-      const { data: newLink } = await supabase
+      const { data: newLink, error } = await supabase
         .from('user_links')
         .insert({
           profile_id: user.id,
@@ -60,15 +76,21 @@ export default function Dashboard() {
         .select()
         .single()
 
-      setLinks([...links, newLink])
+      if (newLink) {
+        setLinks([...links, newLink])
+      }
+      if (error) {
+        console.error('Error adding link:', error)
+        // Optionally: show an error message to the user
+      }
     }
   }
 
-  const handleEditLink = (link) => {
+  const handleEditLink = (link: Link) => {
     setEditingLink(link)
   }
 
-  const handleDeleteLink = async (id) => {
+  const handleDeleteLink = async (id: number) => {
     await supabase
       .from('user_links')
       .delete()
@@ -125,9 +147,9 @@ export default function Dashboard() {
               <li key={link.id} className="flex items-center justify-between p-3 border rounded bg-gray-50 dark:bg-slate-700 dark:border-slate-600">
                 <div className="flex items-center space-x-3">
                   <span className="text-lg">
-                    {link.icon === 'video' ? '🎬' : 
-                     link.icon === 'music' ? '🎵' : 
-                     link.icon === 'store' ? '🛍️' : 
+                    {link.icon === 'video' ? '🎬' :
+                     link.icon === 'music' ? '🎵' :
+                     link.icon === 'store' ? '🛍️' :
                      link.icon === 'donate' ? '💖' : '🔗'}
                   </span>
                   <div>
