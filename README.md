@@ -2,6 +2,23 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### Prerequisites
+
+This project uses [Supabase](https://supabase.com) for authentication and database. To run the full application, you'll need to set up environment variables.
+
+1. Copy the example environment file:
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. Update `.env.local` with your Supabase credentials:
+   - Get your Supabase URL and anon key from [your Supabase project settings](https://app.supabase.com)
+   - Add them to `.env.local`
+
+**Note:** The application will run without these credentials, but features requiring authentication and database access won't work until Supabase is properly configured.
+
+### Running the Development Server
+
 First, run the development server:
 
 ```bash
