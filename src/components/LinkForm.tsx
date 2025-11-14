@@ -1,5 +1,5 @@
 'use client'
-import { useState, FormEvent, useEffect } from 'react'
+import { useState, FormEvent } from 'react'
 
 type Link = {
   id: number;
@@ -14,21 +14,9 @@ type LinkFormProps = {
 };
 
 export default function LinkForm({ onSubmit, initialData = null }: LinkFormProps) {
-  const [title, setTitle] = useState('')
-  const [url, setUrl] = useState('')
-  const [icon, setIcon] = useState('link')
-
-  useEffect(() => {
-    if (initialData) {
-      setTitle(initialData.title || '')
-      setUrl(initialData.url || '')
-      setIcon(initialData.icon || 'link')
-    } else {
-      setTitle('')
-      setUrl('')
-      setIcon('link')
-    }
-  }, [initialData])
+  const [title, setTitle] = useState(initialData?.title || '')
+  const [url, setUrl] = useState(initialData?.url || '')
+  const [icon, setIcon] = useState(initialData?.icon || 'link')
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()

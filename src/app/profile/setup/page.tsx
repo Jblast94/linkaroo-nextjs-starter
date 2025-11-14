@@ -32,8 +32,8 @@ export default function ProfileSetup() {
       if (error) throw error
       
       router.push('/dashboard')
-    } catch (err: any) {
-      setError(err.message || 'Failed to create profile')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create profile')
     } finally {
       setLoading(false)
     }
