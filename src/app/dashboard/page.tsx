@@ -51,7 +51,7 @@ export default function Dashboard() {
       setLinks(linksData || [])
     }
     loadUserData()
-  }, [])
+  }, [router])
 
   const handleAddLink = async (linkData: Omit<Link, 'id' | 'order_index' | 'profile_id'>) => {
     if (!user) return
@@ -133,6 +133,7 @@ export default function Dashboard() {
       </div>
 
       <LinkForm 
+        key={editingLink?.id || 'new'}
         onSubmit={handleAddLink} 
         initialData={editingLink}
       />
